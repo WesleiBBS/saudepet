@@ -48,7 +48,7 @@ Um aplicativo PWA (Progressive Web App) para acompanhar a saúde do seu pet com 
 ### Instalação
 ```bash
 # Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/WesleiBBS/saudepet.git
 
 # Entre na pasta do projeto
 cd pet-health-app
