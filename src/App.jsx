@@ -3,6 +3,7 @@ import { Navigation } from './components/Navigation.jsx'
 import { AgendaScreen } from './components/AgendaScreen.jsx'
 import { LembretesScreen } from './components/LembretesScreen.jsx'
 import { ProntuarioScreen } from './components/ProntuarioScreen.jsx'
+import { PWAInstallPrompt } from './components/PWAInstallPrompt.jsx'
 import './App.css'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <main className="max-w-4xl mx-auto">
         {renderScreen()}
       </main>
+      <PWAInstallPrompt />
     </div>
   )
 }
