@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PetHealth - Aplicativo de Saúde Pet
 
 Um aplicativo PWA (Progressive Web App) para acompanhar a saúde do seu pet com funcionalidades de agenda, lembretes e prontuário digital.
@@ -125,4 +126,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull re
 ---
 
 Desenvolvido com ❤️ para o cuidado dos nossos pets 🐕🐱
-
