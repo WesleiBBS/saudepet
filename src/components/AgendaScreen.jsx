@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { Calendar, Plus, Clock, MapPin } from 'lucide-react'
-import { Button } from '@/components/ui/button.jsx'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { AddAppointmentModal } from './AddAppointmentModal.jsx'
 import { usePetHealthData } from '../hooks/useLocalStorage.js'
 
@@ -24,30 +22,32 @@ export function AgendaScreen() {
   }
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Agenda</h2>
-        <Button 
-          className="flex items-center space-x-2"
+    <div className="space-y-6">
+      <div className="neuro-header">
+        <h2 className="text-2xl font-bold text-gray-800">
+          <Calendar className="h-6 w-6 mr-2 inline-block" />
+          Agenda
+        </h2>
+        <button 
           onClick={() => setShowAddModal(true)}
+          className="neuro-button-primary"
         >
           <Plus className="h-4 w-4" />
-          <span>Nova Consulta</span>
-        </Button>
+          <span className="hidden sm:inline ml-2">Nova Consulta</span>
+        </button>
       </div>
 
-      <div className="grid gap-4">
+      <div className="neuro-list">
         {appointments.map((appointment) => (
-          <Card key={appointment.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{appointment.petName}</CardTitle>
-                <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                  {appointment.status}
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
+          <div key={appointment.id} className="neuro-list-item">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-gray-800">{appointment.petName}</h3>
+              <span className={`neuro-badge ${appointment.status === 'agendado' ? 'info' : 'success'}`}>
+                {appointment.status}
+              </span>
+            </div>
+            
+            <div className="space-y-2">
               <div className="flex items-center space-x-2 text-gray-600">
                 <Calendar className="h-4 w-4" />
                 <span>{formatDate(appointment.date)}</span>
@@ -65,24 +65,27 @@ export function AgendaScreen() {
               <div className="mt-3">
                 <p className="font-medium text-gray-900">{appointment.type}</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
       {appointments.length === 0 && (
-        <div className="text-center py-12">
+        <div className="neuro-card text-center py-12">
           <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-800 mb-2">
             Nenhuma consulta agendada
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-600 mb-4">
             Agende a primeira consulta do seu pet
           </p>
-          <Button onClick={() => setShowAddModal(true)}>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="neuro-button-primary"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Agendar Consulta
-          </Button>
+          </button>
         </div>
       )}
 

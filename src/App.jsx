@@ -23,11 +23,13 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="max-w-4xl mx-auto">
-        {renderScreen()}
-      </main>
+    <div className="neuro-bg">
+      <div className="neuro-container max-w-4xl mx-auto">
+        <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        <main className="neuro-float">
+          {renderScreen()}
+        </main>
+      </div>
       <PWAInstallPrompt />
     </div>
   )

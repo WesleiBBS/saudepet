@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { Bell, Plus, Clock, AlertCircle, CheckCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button.jsx'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { AddReminderModal } from './AddReminderModal.jsx'
 import { usePetHealthData } from '../hooks/useLocalStorage.js'
 
@@ -21,15 +19,6 @@ export function LembretesScreen() {
     ))
   }
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'alta': return 'bg-red-100 text-red-800'
-      case 'média': return 'bg-yellow-100 text-yellow-800'
-      case 'baixa': return 'bg-green-100 text-green-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('pt-BR')
@@ -47,30 +36,36 @@ export function LembretesScreen() {
   const completedReminders = reminders.filter(r => r.completed)
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Lembretes</h2>
-        <Button 
-          className="flex items-center space-x-2"
+    <div className="space-y-6">
+      <div className="neuro-header">
+        <h2 className="text-2xl font-bold text-gray-800">
+          <Bell className="h-6 w-6 mr-2 inline-block" />
+          Lembretes
+        </h2>
+        <button 
           onClick={() => setShowAddModal(true)}
+          className="neuro-button-primary"
         >
           <Plus className="h-4 w-4" />
-          <span>Novo Lembrete</span>
-        </Button>
+          <span className="hidden sm:inline ml-2">Novo Lembrete</span>
+        </button>
       </div>
 
       {/* Lembretes Ativos */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">Pendentes</h3>
-        {activeReminders.map((reminder) => {
-          const daysUntil = getDaysUntilDue(reminder.dueDate)
-          return (
-            <Card key={reminder.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{reminder.petName}</CardTitle>
+      <div className="neuro-card">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Pendentes</h3>
+        <div className="neuro-list">
+          {activeReminders.map((reminder) => {
+            const daysUntil = getDaysUntilDue(reminder.dueDate)
+            return (
+              <div key={reminder.id} className="neuro-list-item">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-gray-800">{reminder.petName}</h4>
                   <div className="flex items-center space-x-2">
-                    <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(reminder.priority)}`}>
+                    <span className={`neuro-badge ${
+                      reminder.priority === 'alta' ? 'warning' : 
+                      reminder.priority === 'média' ? 'info' : 'success'
+                    }`}>
                       {reminder.priority}
                     </span>
                     {daysUntil <= 3 && (
@@ -78,81 +73,70 @@ export function LembretesScreen() {
                     )}
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <h4 className="font-medium text-gray-900">{reminder.title}</h4>
-                  {reminder.description && (
-                    <p className="text-sm text-gray-600">{reminder.description}</p>
-                  )}
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-gray-600">
-                    <Clock className="h-4 w-4" />
-                    <span className="text-sm">
-                      {formatDate(reminder.dueDate)}
-                      {daysUntil === 0 && <span className="text-red-600 font-medium"> (Hoje!)</span>}
-                      {daysUntil === 1 && <span className="text-orange-600 font-medium"> (Amanhã)</span>}
-                      {daysUntil > 1 && <span> (em {daysUntil} dias)</span>}
-                      {daysUntil < 0 && <span className="text-red-600 font-medium"> (Atrasado)</span>}
-                    </span>
+                
+                <div className="space-y-2">
+                  <h5 className="font-medium text-gray-900">{reminder.title}</h5>
+                  <p className="text-sm text-gray-600">{reminder.description}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-gray-600">
+                      <Clock className="h-4 w-4" />
+                      <span>{formatDate(reminder.dueDate)}</span>
+                      {daysUntil === 0 && <span className="text-red-600 font-medium">(Hoje)</span>}
+                      {daysUntil === 1 && <span className="text-orange-600 font-medium">(Amanhã)</span>}
+                      {daysUntil > 1 && <span className="text-gray-500">({daysUntil} dias)</span>}
+                      {daysUntil < 0 && <span className="text-red-600 font-medium">(Atrasado)</span>}
+                    </div>
+                    
+                    <button
+                      onClick={() => toggleReminder(reminder.id)}
+                      className="neuro-button"
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                      Concluir
+                    </button>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => toggleReminder(reminder.id)}
-                  >
-                    Marcar como Feito
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )
-        })}
+              </div>
+            )
+          })}
+        </div>
+        
+        {activeReminders.length === 0 && (
+          <div className="text-center py-8">
+            <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">Nenhum lembrete pendente</p>
+          </div>
+        )}
       </div>
 
       {/* Lembretes Concluídos */}
       {completedReminders.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Concluídos</h3>
-          {completedReminders.map((reminder) => (
-            <Card key={reminder.id} className="opacity-75">
-              <CardContent className="py-4">
+        <div className="neuro-card">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Concluídos</h3>
+          <div className="neuro-list">
+            {completedReminders.map((reminder) => (
+              <div key={reminder.id} className="neuro-list-item opacity-60">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <div>
-                      <h4 className="font-medium text-gray-900">{reminder.petName} - {reminder.title}</h4>
-                      <p className="text-sm text-gray-600">{formatDate(reminder.dueDate)}</p>
+                  <div>
+                    <h4 className="font-medium text-gray-800">{reminder.petName}</h4>
+                    <p className="text-sm text-gray-600">{reminder.title}</p>
+                    <div className="flex items-center space-x-2 text-gray-500 text-sm">
+                      <Clock className="h-4 w-4" />
+                      <span>{formatDate(reminder.dueDate)}</span>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  <button
                     onClick={() => toggleReminder(reminder.id)}
+                    className="neuro-button"
                   >
-                    Desfazer
-                  </Button>
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    Reativar
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {reminders.length === 0 && (
-        <div className="text-center py-12">
-          <Bell className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Nenhum lembrete criado
-          </h3>
-          <p className="text-gray-500 mb-4">
-            Crie lembretes para não esquecer dos cuidados do seu pet
-          </p>
-          <Button onClick={() => setShowAddModal(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Criar Lembrete
-          </Button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -164,4 +148,3 @@ export function LembretesScreen() {
     </div>
   )
 }
-
